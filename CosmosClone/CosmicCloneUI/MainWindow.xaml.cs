@@ -36,14 +36,12 @@ namespace CosmicCloneUI
         Page copyCollectionPage;
         Page[] pages;
 
-        CosmosDBHelper cosmosHelper;
         List<ScrubRule> scrubRules;
 
         public MainWindow()
         {
             InitializeComponent();
             InitializePages();
-            cosmosHelper = new CosmosDBHelper();
             this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
         }
 

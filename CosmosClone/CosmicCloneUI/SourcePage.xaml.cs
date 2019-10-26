@@ -21,12 +21,14 @@ namespace CosmicCloneUI
     /// </summary>
     public partial class SourcePage : Page
     {
-        CosmosDBHelper cosmosHelper;
         public SourcePage()
         {
             InitializeComponent();
-            cosmosHelper = new CosmosDBHelper();
+            InitializePage();
+        }
 
+        private void InitializePage()
+        {
             SourceURL.Text = CloneSettings.SourceSettings.EndpointUrl;
             SourceKey.Text = CloneSettings.SourceSettings.AccessKey;
             SourceDB.Text = CloneSettings.SourceSettings.DatabaseName;
@@ -47,7 +49,7 @@ namespace CosmicCloneUI
             CloneSettings.SourceSettings.DatabaseName = SourceDB.Text.ToString();
             CloneSettings.SourceSettings.CollectionName = SourceCollection.Text.ToString();
 
-            var result = cosmosHelper.TestSourceConnection();
+            var result = App.CosmosHelper.TestSourceConnection();
             if (result.IsSuccess)
             {
                 ConnectionIcon.Source = new BitmapImage(new Uri("/Images/success.png", UriKind.Relative));

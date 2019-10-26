@@ -18,10 +18,13 @@ namespace CosmicCloneUI
     /// </summary>
     public partial class App : Application
     {
+        public static CosmosDBHelper CosmosHelper;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
             CloneSettings.LoadSettings();
+            CosmosHelper = new CosmosDBHelper();
         }
     }
 }
