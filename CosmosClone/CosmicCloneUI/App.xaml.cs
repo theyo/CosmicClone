@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 
+using CosmosCloneCommon.Utility;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -17,5 +18,10 @@ namespace CosmicCloneUI
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            CloneSettings.LoadSettings();
+        }
     }
 }

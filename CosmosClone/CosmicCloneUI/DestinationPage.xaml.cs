@@ -29,6 +29,11 @@ namespace CosmicCloneUI
         {
             InitializeComponent();
             cosmosHelper = new CosmosDBHelper();
+
+            TargetURL.Text = CloneSettings.TargetSettings.EndpointUrl;
+            TargetKey.Text = CloneSettings.TargetSettings.AccessKey;
+            TargetDB.Text = CloneSettings.TargetSettings.DatabaseName;
+            TargetCollection.Text = CloneSettings.TargetSettings.CollectionName;
         }
 
         private void BtnTestTarget(object sender, RoutedEventArgs e)
@@ -39,24 +44,21 @@ namespace CosmicCloneUI
         public bool TestDestinationConnection()
         {
             ConnectionTestMsg.Text = "";
-            CloneSettings.TargetSettings = new CosmosCollectionValues()
-            {
-                EndpointUrl = TargetURL.Text.ToString(),
-                AccessKey = TargetKey.Text.ToString(),
-                DatabaseName = TargetDB.Text.ToString(),
-                CollectionName = TargetCollection.Text.ToString()
-            };
+
+            CloneSettings.TargetSettings.EndpointUrl = TargetURL.Text.ToString();
+            CloneSettings.TargetSettings.AccessKey = TargetKey.Text.ToString();
+            CloneSettings.TargetSettings.DatabaseName = TargetDB.Text.ToString();
+            CloneSettings.TargetSettings.CollectionName = TargetCollection.Text.ToString();
+
 
             var result = cosmosHelper.TestTargetConnection();
             if (result.IsSuccess)
             {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
                 ConnectionIcon.Source = new BitmapImage(new Uri("/Images/success.png", UriKind.Relative));
                 ConnectionTestMsg.Text = "Validation Passed";
             }
             else
             {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
                 ConnectionIcon.Source = new BitmapImage(new Uri("/Images/fail.png", UriKind.Relative));
                 ConnectionTestMsg.Text = result.Message;
             }
