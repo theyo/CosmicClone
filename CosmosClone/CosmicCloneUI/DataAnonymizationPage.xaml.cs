@@ -52,7 +52,7 @@ namespace CosmicCloneUI
         private void CreateScrubRule(ScrubRule scrubRule = null)
         {
 
-            WrapPanel parentStackPanelLeft = (WrapPanel) this.FindName("WrapPanel");
+            WrapPanel parentStackPanelLeft = (WrapPanel)this.FindName("WrapPanel");
 
             int newRuleIndex = newIndex(scrubRule);
             AddRuleWithData(parentStackPanelLeft, newRuleIndex, scrubRule);
@@ -61,7 +61,7 @@ namespace CosmicCloneUI
         int newIndex(ScrubRule scrubRule = null)
         {
             int newRuleIndex = 0;
-            if(scrubRule == null)
+            if (scrubRule == null)
             {
                 newRuleIndex = RuleIndex++;
             }
@@ -239,20 +239,19 @@ namespace CosmicCloneUI
 
             exp.Content = sp;
 
-            if(scrubRule!=null)
+            if (scrubRule != null)
             {
                 FilterTB.Text = scrubRule.FilterCondition;
                 AttributeScrubTB.Text = scrubRule.PropertyName;
-                if(scrubRule.Type!=null) ScrubTypeCB.SelectedIndex = (int)scrubRule.Type;
+                if (scrubRule.Type != null) ScrubTypeCB.SelectedIndex = (int)scrubRule.Type;
                 ScrubValueTB.Text = scrubRule.UpdateValue;
             }
             parentStackPanel.Children.Add(exp);
-            if(!SaveRuleButton.IsEnabled)
+            if (!SaveRuleButton.IsEnabled)
             {
                 SaveRuleButton.IsEnabled = true;
             }
         }
-      
 
         private void scrubTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -275,7 +274,7 @@ namespace CosmicCloneUI
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
             var btnDelete = (Button)sender;
-            string expname = "RuleExpander_" + btnDelete.Name.Substring(btnDelete.Name.IndexOf('_')+1);
+            string expname = "RuleExpander_" + btnDelete.Name.Substring(btnDelete.Name.IndexOf('_') + 1);
 
             WrapPanel wrapPanel = (WrapPanel)this.FindName("WrapPanel");
             foreach (UIElement SPUI in wrapPanel.Children)
@@ -299,35 +298,35 @@ namespace CosmicCloneUI
             {
                 rule.RuleId = 0;//reset Ids so they are re assigned
                 CreateScrubRule(rule);
-            }           
+            }
         }
 
         public List<ScrubRule> getScrubRules()
         {
             //List<ScrubRule> sb = new List<ScrubRule>();
-            TextBox filterCondition = (TextBox) this.FindName("FilterCondition");
+            TextBox filterCondition = (TextBox)this.FindName("FilterCondition");
             //sb.filterQuery = filterCondition.Text;
             List<ScrubRule> srList = new List<ScrubRule>();
 
-            WrapPanel wrapPanel = (WrapPanel) this.FindName("WrapPanel");
+            WrapPanel wrapPanel = (WrapPanel)this.FindName("WrapPanel");
             foreach (UIElement SPUI in wrapPanel.Children)
             {
-                Expander exp = (Expander) SPUI;
-                StackPanel lrsp = (StackPanel) exp.Content;
+                Expander exp = (Expander)SPUI;
+                StackPanel lrsp = (StackPanel)exp.Content;
                 UIElementCollection uiElementsSP = lrsp.Children;
 
                 ScrubRule sr = new ScrubRule();
 
                 foreach (UIElement uiElementSP in uiElementsSP)
                 {
-                    StackPanel tempSP = (StackPanel) uiElementSP;
+                    StackPanel tempSP = (StackPanel)uiElementSP;
                     UIElementCollection uiElements = tempSP.Children;
 
                     foreach (UIElement uiElement in uiElements)
                     {
                         if (uiElement.GetType().Name == "Label")
                         {
-                            var ruleIdLabel = (Label) uiElement;
+                            var ruleIdLabel = (Label)uiElement;
                             int ruleId;
                             if (int.TryParse(ruleIdLabel.Content.ToString(), out ruleId))
                             {
@@ -338,7 +337,7 @@ namespace CosmicCloneUI
 
                         if (uiElement.GetType().Name == "TextBox")
                         {
-                            TextBox tb = (TextBox) uiElement;
+                            TextBox tb = (TextBox)uiElement;
                             string name = tb.Name.Substring(0, tb.Name.Length - 1);
 
                             if (name == "Filter")
@@ -357,7 +356,7 @@ namespace CosmicCloneUI
 
                         if (uiElement.GetType().Name == "ComboBox")
                         {
-                            ComboBox cb = (ComboBox) uiElement;
+                            ComboBox cb = (ComboBox)uiElement;
                             string name = cb.Name.Substring(0, cb.Name.Length - 1);
                             if (name == "ScrubType")
                             {
@@ -393,11 +392,11 @@ namespace CosmicCloneUI
 
             foreach (var rule in orderedRules)
             {
-                if(rule.Type == null)
+                if (rule.Type == null)
                 {
                     validationMessages.Add($"Rule:{rule.RuleId} - Please select a valid anonymization type");
                 }
-                if(string.IsNullOrEmpty(rule.PropertyName))
+                if (string.IsNullOrEmpty(rule.PropertyName))
                 {
                     validationMessages.Add($"Rule:{rule.RuleId} - Attribute name is empty");
                 }
@@ -415,17 +414,17 @@ namespace CosmicCloneUI
                     {
                         validationMessages.Add($"Rule:{rule.RuleId} - Filter condition starts improperly. Sample c.EntityType=\"document\" ");
                     }
-                }               
+                }
             }
-            if(validationMessages.Count > 0)
+            if (validationMessages.Count > 0)
             {
                 isValidationSuccess = false;
-                string message="";
-                foreach(var msg in validationMessages)
+                string message = "";
+                foreach (var msg in validationMessages)
                 {
                     message += (msg + System.Environment.NewLine);
-                }                
-                MessageBox.Show(message, "Input validation",MessageBoxButton.OK,MessageBoxImage.Error);
+                }
+                MessageBox.Show(message, "Input validation", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else isValidationSuccess = true;
             return isValidationSuccess;
@@ -439,7 +438,7 @@ namespace CosmicCloneUI
 
             if (rules == null || rules.Count == 0)
             {
-                MessageBox.Show("No Rules found. Please add/load anonymization rules before Save", "No rules Found", MessageBoxButton.OK, MessageBoxImage.Warning);                
+                MessageBox.Show("No Rules found. Please add/load anonymization rules before Save", "No rules Found", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -447,13 +446,13 @@ namespace CosmicCloneUI
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             saveFileDialog.Filter = "XML file (*.xml)|*.xml";
             saveFileDialog.Title = "CosmicClone save AnonymizationRules";
-            saveFileDialog.FileName = "AnonymizationRules_"+ DateTime.Now.ToString("MM-dd-yyyy-HHmmss",CultureInfo.InvariantCulture);            
-            
+            saveFileDialog.FileName = "AnonymizationRules_" + DateTime.Now.ToString("MM-dd-yyyy-HHmmss", CultureInfo.InvariantCulture);
+
             if (saveFileDialog.ShowDialog() == true)
-            {                
+            {
                 var xmlText = CloneSerializer.XMLSerialize(rules);
                 File.WriteAllText(saveFileDialog.FileName, xmlText);
-            }                
+            }
         }
 
         private void LoadRuleButton_Click(object sender, RoutedEventArgs e)
@@ -468,12 +467,12 @@ namespace CosmicCloneUI
                 var rules = CloneSerializer.XMLDeserialize<List<ScrubRule>>(xmlText);
                 if (rules == null && rules.Count == 0)
                 {
-                    MessageBox.Show("No rules to Load in file : "+openFileDialog.FileName , "No rules Found", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("No rules to Load in file : " + openFileDialog.FileName, "No rules Found", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
                 var orderedRules = rules.OrderBy(o => o.RuleId).ToList();
-                
+
                 //Delete all scrub rules
                 WrapPanel wrapPanel = (WrapPanel)this.FindName("WrapPanel");
                 wrapPanel.Children.Clear();
@@ -493,7 +492,7 @@ namespace CosmicCloneUI
         private void ValidateRuleButton_Click(object sender, RoutedEventArgs e)
         {
             var rules = getScrubRules();
-            if (rules == null || rules.Count==0)
+            if (rules == null || rules.Count == 0)
             {
                 MessageBox.Show("No Rules found. Please add/load anonymization rules before Validation", "Data validation", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;

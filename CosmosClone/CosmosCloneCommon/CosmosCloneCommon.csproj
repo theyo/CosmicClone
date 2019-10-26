@@ -83,6 +83,7 @@
     <Compile Include="Utility\CloneSerializer.cs" />
     <Compile Include="Utility\CloneSettings.cs" />
     <Compile Include="Utility\CosmosBulkImporter.cs" />
+    <Compile Include="Utility\CosmosCollectionDBConfigurationSection.cs" />
     <Compile Include="Utility\CosmosDBHelper.cs" />
     <Compile Include="Utility\ObjectScrubber.cs" />
   </ItemGroup>

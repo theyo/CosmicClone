@@ -39,7 +39,6 @@ namespace CosmosCloneCommon.Migrator
             public CodeMigrator()
             {
                 //initialize settings and other utilities
-                var SourceCosmosDBSettings = CloneSettings.GetConfigurationSection("SourceCosmosDBSettings");
                 SourceEndpointUrl = CloneSettings.SourceSettings.EndpointUrl; ;
                 SourceAccessKey = CloneSettings.SourceSettings.AccessKey;
                 sourceDatabaseName = CloneSettings.SourceSettings.DatabaseName;
@@ -205,5 +204,5 @@ namespace CosmosCloneCommon.Migrator
             }
 
         }
-    
+
 }

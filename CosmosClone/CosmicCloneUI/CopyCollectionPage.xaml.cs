@@ -35,19 +35,18 @@ namespace CosmicCloneUI
         public void SetStatus()
         {
             //StatusTextBlock.Text = CloneLogger.getFullLog();
-            
         }
 
         public void setRequiredprogressBars(List<ScrubRule> scrubRules)
         {
-            if(CloneSettings.CopyDocuments==false)
+            if (CloneSettings.CopyDocuments == false)
             {
                 CollectionReadStackPanel.Visibility = Visibility.Hidden;
                 CollectionWriteStackPanel.Visibility = Visibility.Hidden;
             }
-            if(CloneSettings.ScrubbingRequired)
+            if (CloneSettings.ScrubbingRequired)
             {
-                if(scrubRules == null || scrubRules.Count<=0)
+                if (scrubRules == null || scrubRules.Count <= 0)
                 {
                     ScrubStackPanel.Visibility = Visibility.Hidden;
                 }
@@ -56,19 +55,19 @@ namespace CosmicCloneUI
 
         private void ShowStatusButton_Click(object sender, RoutedEventArgs e)
         {
-            if(StatusTextBlock.Visibility == Visibility.Visible)
+            if (StatusTextBlock.Visibility == Visibility.Visible)
             {
                 StatusTextBlock.Visibility = Visibility.Hidden;
                 StatusTextBlockBorder.Visibility = Visibility.Hidden;
                 ShowStatusButton.Content = "Show status";
             }
-            else if(StatusTextBlock.Visibility == Visibility.Hidden)
+            else if (StatusTextBlock.Visibility == Visibility.Hidden)
             {
                 StatusTextBlock.Visibility = Visibility.Visible;
                 StatusTextBlockBorder.Visibility = Visibility.Visible;
                 ShowStatusButton.Content = "Hide status";
             }
-            
+
         }
     }
 }

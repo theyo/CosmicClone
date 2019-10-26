@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using CosmosCloneCommon.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,21 +33,36 @@ namespace CosmicCloneUI
         public bool TestCloneOptions()
         {
             var result = true;
-            if (!int.TryParse(OfferThroughput.Text, out int RU))
+
+            CloneSettings.CopyStoredProcedures = SPs.IsChecked.Value;
+            CloneSettings.CopyUDFs = UDFs.IsChecked.Value;
+            CloneSettings.CopyTriggers = CosmosTriggers.IsChecked.Value;
+            CloneSettings.CopyDocuments = Documents.IsChecked.Value;
+            CloneSettings.CopyIndexingPolicy = IPs.IsChecked.Value;
+            CloneSettings.CopyPartitionKey = PKs.IsChecked.Value;
+
+            if (int.TryParse(OfferThroughput.Text, out int RU))
+            {
+                CloneSettings.TargetMigrationOfferThroughputRUs = int.Parse(OfferThroughput.Text);
+            }
+            else
+            {
+                result = false;
+            }
+
+            if (RU < 400)
                 result = false;
 
-            if (RU < 400) result = false;
-            if (RU % 100 != 0) result = false;
+            if (RU % 100 != 0)
+                result = false;
 
             if (result)
             {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
                 ConnectionIcon.Source = new BitmapImage(new Uri("/Images/success.png", UriKind.Relative));
                 ConnectionTestMsg.Text = "Validation Passed";
             }
             else
             {
-                var connectionIcon = (Image)this.FindName("ConnectionIcon");
                 ConnectionIcon.Source = new BitmapImage(new Uri("/Images/fail.png", UriKind.Relative));
                 ConnectionTestMsg.Text = "Invalid Throughput provided. Make sure it's a number greater than 400 and multiple of 100.";
             }
