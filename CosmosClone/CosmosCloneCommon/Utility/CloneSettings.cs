@@ -15,7 +15,23 @@ namespace CosmosCloneCommon.Utility
 
     public static class CloneSettings
     {
-        private const string PriorSessionName = "PriorSession";
+        public static class Constants
+        {
+            public const string PriorSessionName = "PriorSession";
+            public const string CopyStoredProcedures = "CopyStoredProcedures";
+            public const string CopyUDFs = "CopyUDFs";
+            public const string CopyTriggers = "CopyTriggers";
+            public const string CopyDocuments = "CopyDocuments";
+            public const string CopyIndexingPolicy = "CopyIndexingPolicy";
+            public const string CopyPartitionKey = "CopyPartitionKey";
+            public const string ReadBatchSize = "ReadBatchSize";
+            public const string WriteBatchCount = "WriteBatchCount";
+            public const string EnableTextLogging = "EnableTextLogging";
+            public const string SourceOfferThroughputRUs = "SourceOfferThroughputRUs";
+            public const string TargetMigrationOfferThroughputRUs = "TargetMigrationOfferThroughputRUs";
+            public const string TargetRestOfferThroughputRUs = "TargetRestOfferThroughputRUs";
+            public const string ScrubbingRequired = "ScrubbingRequired";
+        }
 
         public static bool CopyStoredProcedures { get; set; }
         public static bool CopyUDFs { get; set; }
@@ -66,29 +82,29 @@ namespace CosmosCloneCommon.Utility
         public static void SaveSettings(string name = null)
         {
             if (string.IsNullOrWhiteSpace(name))
-                name = PriorSessionName;
+                name = Constants.PriorSessionName;
 
             var config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            config.AppSettings.Settings["CopyStoredProcedures"].Value = CopyStoredProcedures.ToString();
-            config.AppSettings.Settings["CopyUDFs"].Value = CopyUDFs.ToString();
-            config.AppSettings.Settings["CopyTriggers"].Value = CopyTriggers.ToString();
-            config.AppSettings.Settings["CopyDocuments"].Value = CopyDocuments.ToString();
-            config.AppSettings.Settings["CopyIndexingPolicy"].Value = CopyIndexingPolicy.ToString();
-            config.AppSettings.Settings["CopyPartitionKey"].Value = CopyPartitionKey.ToString();
-            config.AppSettings.Settings["ReadBatchSize"].Value = ReadBatchSize.ToString();
-            config.AppSettings.Settings["WriteBatchCount"].Value = WriteBatchSize.ToString();
-            config.AppSettings.Settings["EnableTextLogging"].Value = EnableTextLogging.ToString();
-            config.AppSettings.Settings["SourceOfferThroughputRUs"].Value = SourceOfferThroughputRUs.ToString();
-            config.AppSettings.Settings["TargetMigrationOfferThroughputRUs"].Value = TargetMigrationOfferThroughputRUs.ToString();
-            config.AppSettings.Settings["TargetRestOfferThroughputRUs"].Value = TargetRestOfferThroughputRUs.ToString();
-            config.AppSettings.Settings["ScrubbingRequired"].Value = ScrubbingRequired.ToString();
+            config.AppSettings.Settings[Constants.CopyStoredProcedures].Value = CopyStoredProcedures.ToString();
+            config.AppSettings.Settings[Constants.CopyUDFs].Value = CopyUDFs.ToString();
+            config.AppSettings.Settings[Constants.CopyTriggers].Value = CopyTriggers.ToString();
+            config.AppSettings.Settings[Constants.CopyDocuments].Value = CopyDocuments.ToString();
+            config.AppSettings.Settings[Constants.CopyIndexingPolicy].Value = CopyIndexingPolicy.ToString();
+            config.AppSettings.Settings[Constants.CopyPartitionKey].Value = CopyPartitionKey.ToString();
+            config.AppSettings.Settings[Constants.ReadBatchSize].Value = ReadBatchSize.ToString();
+            config.AppSettings.Settings[Constants.WriteBatchCount].Value = WriteBatchSize.ToString();
+            config.AppSettings.Settings[Constants.EnableTextLogging].Value = EnableTextLogging.ToString();
+            config.AppSettings.Settings[Constants.SourceOfferThroughputRUs].Value = SourceOfferThroughputRUs.ToString();
+            config.AppSettings.Settings[Constants.TargetMigrationOfferThroughputRUs].Value = TargetMigrationOfferThroughputRUs.ToString();
+            config.AppSettings.Settings[Constants.TargetRestOfferThroughputRUs].Value = TargetRestOfferThroughputRUs.ToString();
+            config.AppSettings.Settings[Constants.ScrubbingRequired].Value = ScrubbingRequired.ToString();
 
             var cosmosConfigs = config.GetSection(CosmosCollectionDBConfigurationSection.SectionName) as CosmosCollectionDBConfigurationSection;
             var sourceConfig = cosmosConfigs.SourceCosmosDBSettings.OfType<CosmosDBSettingsElement>().Single(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             var targetConfig = cosmosConfigs.TargetCosmosDBSettings.OfType<CosmosDBSettingsElement>().Single(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
-            UpdateSettings(sourceConfig, SourceSettings);
-            UpdateSettings(targetConfig, TargetSettings);
+            UpdateCosmosDBSettings(sourceConfig, SourceSettings);
+            UpdateCosmosDBSettings(targetConfig, TargetSettings);
 
             config.Save(ConfigurationSaveMode.Modified);
         }
@@ -96,33 +112,33 @@ namespace CosmosCloneCommon.Utility
         public static void LoadSettings(string name = null)
         {
             if (string.IsNullOrWhiteSpace(name))
-                name = PriorSessionName;
+                name = Constants.PriorSessionName;
 
             ConfigurationManager.RefreshSection("appSettings");
             ConfigurationManager.RefreshSection(CosmosCollectionDBConfigurationSection.SectionName);
 
             var appSettings = ConfigurationManager.AppSettings;
 
-            CopyStoredProcedures = bool.Parse(appSettings["CopyStoredProcedures"]);
-            CopyUDFs = bool.Parse(appSettings["CopyUDFs"]);
-            CopyTriggers = bool.Parse(appSettings["CopyTriggers"]);
-            CopyDocuments = bool.Parse(appSettings["CopyDocuments"]);
-            CopyIndexingPolicy = bool.Parse(appSettings["CopyIndexingPolicy"]);
-            CopyPartitionKey = bool.Parse(appSettings["CopyPartitionKey"]);
-            ReadBatchSize = int.Parse(appSettings["ReadBatchSize"].ToString());
-            WriteBatchSize = int.Parse(appSettings["WriteBatchCount"]);
-            EnableTextLogging = bool.Parse(appSettings["EnableTextLogging"]);
-            SourceOfferThroughputRUs = int.Parse(appSettings["SourceOfferThroughputRUs"]);
-            TargetMigrationOfferThroughputRUs = int.Parse(appSettings["TargetMigrationOfferThroughputRUs"]);
-            TargetRestOfferThroughputRUs = int.Parse(appSettings["TargetRestOfferThroughputRUs"]);
-            ScrubbingRequired = bool.Parse(appSettings["ScrubbingRequired"]);
+            CopyStoredProcedures = bool.Parse(appSettings[Constants.CopyStoredProcedures]);
+            CopyUDFs = bool.Parse(appSettings[Constants.CopyUDFs]);
+            CopyTriggers = bool.Parse(appSettings[Constants.CopyTriggers]);
+            CopyDocuments = bool.Parse(appSettings[Constants.CopyDocuments]);
+            CopyIndexingPolicy = bool.Parse(appSettings[Constants.CopyIndexingPolicy]);
+            CopyPartitionKey = bool.Parse(appSettings[Constants.CopyPartitionKey]);
+            ReadBatchSize = int.Parse(appSettings[Constants.ReadBatchSize].ToString());
+            WriteBatchSize = int.Parse(appSettings[Constants.WriteBatchCount]);
+            EnableTextLogging = bool.Parse(appSettings[Constants.EnableTextLogging]);
+            SourceOfferThroughputRUs = int.Parse(appSettings[Constants.SourceOfferThroughputRUs]);
+            TargetMigrationOfferThroughputRUs = int.Parse(appSettings[Constants.TargetMigrationOfferThroughputRUs]);
+            TargetRestOfferThroughputRUs = int.Parse(appSettings[Constants.TargetRestOfferThroughputRUs]);
+            ScrubbingRequired = bool.Parse(appSettings[Constants.ScrubbingRequired]);
 
             SourceSettings = GetSourceSettings(name);
 
             TargetSettings = GetTargetSettings(name);
         }
 
-        private static void UpdateSettings(CosmosDBSettingsElement configSetting, CosmosCollectionValues runSetting)
+        private static void UpdateCosmosDBSettings(CosmosDBSettingsElement configSetting, CosmosCollectionValues runSetting)
         {
             configSetting.EndpointUrl = runSetting.EndpointUrl;
             configSetting.AccessKey = runSetting.AccessKey;
