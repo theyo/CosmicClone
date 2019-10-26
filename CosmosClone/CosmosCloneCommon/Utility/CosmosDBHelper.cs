@@ -101,10 +101,10 @@ namespace CosmosCloneCommon.Utility
         public DocumentClient GetSourceDocumentDbClient()
         {
             try
-            {                
+            {
                 string SourceEndpointUrl = CloneSettings.SourceSettings.EndpointUrl;
                 string SourceAccessKey = CloneSettings.SourceSettings.AccessKey;
-                var sourceDocumentClient = new DocumentClient(new Uri(SourceEndpointUrl), SourceAccessKey, ConnectionPolicy);                
+                var sourceDocumentClient = new DocumentClient(new Uri(SourceEndpointUrl), SourceAccessKey, ConnectionPolicy);
                 return sourceDocumentClient;
             }
             catch (Exception ex)
@@ -243,7 +243,7 @@ namespace CosmosCloneCommon.Utility
                 if (partitionKeyDefinition != null && partitionKeyDefinition.Paths.Count>0)
                 {
                     if(CloneSettings.CopyPartitionKey)
-                    { 
+                    {
                     // Partition key exists in Source (Unlimited Storage)
                     newDocumentCollection = (DocumentCollection)await targetClient.CreateDocumentCollectionIfNotExistsAsync
                                         (UriFactory.CreateDatabaseUri(targetDatabaseName),
@@ -310,7 +310,7 @@ namespace CosmosCloneCommon.Utility
                 {
                     scrubDataQuery = "SELECT * FROM c" + " where " + filterCondition;
                 }
-                
+
                 var documentQuery = targetClient.CreateDocumentQuery<T>(UriFactory.CreateDocumentCollectionUri(DatabaseName, CollectionName), scrubDataQuery, queryOptions);
                 return documentQuery;
             }
@@ -325,13 +325,13 @@ namespace CosmosCloneCommon.Utility
         {
             using (var client = GetTargetDocumentDbClient())
             {
-                var collection =  this.GetTargetDocumentCollection(client);
-                
+                var collection =  await this.GetTargetDocumentCollection(client).ConfigureAwait(false);
+
                 FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
                 //var Ioffer = cosmosClient.CreateOfferQuery(queryOptions);
                 //var offer = Ioffer.AsEnumerable().SingleOrDefault();
                 Offer offer = client.CreateOfferQuery()
-                                 .Where(r => r.ResourceLink == collection.Result.SelfLink)
+                                 .Where(r => r.ResourceLink == collection.SelfLink)
                                  .AsEnumerable()
                                  .SingleOrDefault();
                 offer = new OfferV2(offer, CloneSettings.TargetRestOfferThroughputRUs);
@@ -349,7 +349,7 @@ namespace CosmosCloneCommon.Utility
             string topOneRecordQuery = "SELECT TOP 1 * FROM c";
             FeedOptions queryOptions = new FeedOptions { MaxItemCount = -1, EnableCrossPartitionQuery = true };
             //long sourceTotalRecordCount, targetTotalRecordCount;
-            try { 
+            try {
                 using (var cosmosClient = GetSourceDocumentDbClient())
                 {
                     var document = cosmosClient.CreateDocumentQuery<dynamic>(
@@ -366,12 +366,12 @@ namespace CosmosCloneCommon.Utility
             }
             return false;
         }
-        
+
         public long GetFilterRecordCount(string filterCondition)
         {
             //var TargetCosmosDBSettings = CloneSettings.GetConfigurationSection("SourceCosmosDBSettings");
             string targetDatabaseName = CloneSettings.TargetSettings.DatabaseName;
-            string targetCollectionName = CloneSettings.TargetSettings.CollectionName;            
+            string targetCollectionName = CloneSettings.TargetSettings.CollectionName;
 
             string totalCountQuery = "SELECT VALUE COUNT(1) FROM c";
             if(!string.IsNullOrEmpty(filterCondition))
@@ -460,6 +460,6 @@ namespace CosmosCloneCommon.Utility
             }
             return sourceTotalRecordCount;
         }
-   
+
     }
 }
